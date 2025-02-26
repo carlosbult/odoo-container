@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="invoice_payment_summary_view_form" model="ir.ui.view">
+        <field name="name">invoice.payment.summary.view.form</field>
+        <field name="model">invoice.payment.summary</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="%(action_report_invoice_payment_summary)d" string="Print" type="action"/>
+                    <button special="cancel" string="Cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="invoice_payment_summary_action">
+        <field name="name">Invoice Payment Summary</field>
+        <field name="res_model">invoice.payment.summary</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem name="Custom Reports"
+              id="custom_reports_menu"
+              parent="account.menu_finance_reports"/>
+
+    <menuitem name="Invoice Payment Summary"
+              id="invoice_payment_summary_menu"
+              parent="estado_de_cienta_report.custom_reports_menu"
+              action="estado_de_cienta_report.invoice_payment_summary_action" />
+
+</odoo>

@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<templates id="template" xml:space="preserve">
+
+	<t t-name="ReceiptHeader" t-inherit="point_of_sale.ReceiptHeader" t-inherit-mode="extension" owl="1">
+		<!-- <xpath expr="//img" position="replace">
+		</xpath> -->
+		<xpath expr="//div[hasclass('pos-receipt-contact')]" position="replace">
+			<div class="pos-receipt-contact" style="width:100%;margin-top: -10%; font-size: 12px;">
+				<br/>
+				<div t-if="props.data.header" style="white-space:pre-line" t-esc="props.data.header" />
+				<div t-if="props.data.company.vat" 
+					t-esc="props.data.company.vat" />
+				<h3>            
+					<div t-if="props.data.company.partner_id?.[1]" t-esc="props.data.company.partner_id[1]" />
+				</h3>
+				<t t-if="props.data.company.street"><span t-esc="props.data.company.street"/>,</t>
+				<t t-if="props.data.company.street2"><span t-esc="props.data.company.street2"/>,</t>
+				<t t-if="props.data.company.city"><span t-esc="props.data.company.city"/>,</t>
+				<t t-if="props.data.company.state_id"><span t-esc="props.data.company.state_id"/>,</t>
+				<t t-if="props.data.company.country_id"><span t-esc="props.data.company.country_id"/></t>
+
+				<div t-if="props.data.company.email" t-esc="props.data.company.email" />
+	            <div t-if="props.data.company.website" t-esc="props.data.company.website" />
+	            <br/>
+				<table class="table table-sm" style="text-align: left;line-height: 1.3; margin:0px;">
+					<colgroup>
+						<col width='30%'/>
+						<col width='70%'/>
+					</colgroup>
+					<tr t-if="props.data.partner">
+						<td >Raz/Soc:</td>
+						<td>
+							<t t-esc="props.data.partner.name" />
+						</td>
+					</tr>
+					<tr t-if="props.data.partner">
+						<td >Cedula/Rif:</td>
+						<td>
+							<t t-esc="props.data.partner.vat" />
+						</td>
+					</tr>
+					<tr t-if="props.data.partner">
+						<td >Direccion:</td>
+						<td>
+							<t t-if="props.data.partner.street"><t t-esc="props.data.partner.street"/>,</t>
+							<t t-if="props.data.partner.street2"><t t-esc="props.data.partner.street2"/>,</t>
+							<t t-if="props.data.partner.city"><t t-esc="props.data.partner.city"/>,</t>
+							<t t-if="props.data.partner.state_id"><t t-esc="props.data.partner.state_id"/></t>
+						</td>
+					</tr>
+					<tr t-if="props.data.partner">
+						<td >Telefono:</td>
+						<td>
+							<t t-if="props.data.partner.phone" t-esc="props.data.partner.phone" />
+							<t t-if="props.data.partner.mobile" t-esc="props.data.partner.mobile" />
+						</td>
+					</tr>
+					<tr>
+						<td >Usuario:</td>
+						<td >
+							<t t-esc="props.data.cashier" />
+						</td>
+					</tr>
+				</table>
+				<div class="cashier" style="display:none;"></div>
+				<div t-if="props.data.pos.config.cstm_field_header">
+					<span t-esc="props.data.pos.config.cstm_field_header" />
+				</div>
+				<div style="margin-top: 10px;">
+					<span style="float: left;">Factura: </span>
+					<span style="float: right;">
+						<t t-esc="props.data.order.name"/>
+					</span>
+				</div>
+				<br/>
+				<div>
+					<span style="float: left;">Fecha: </span>
+					<span >
+						<t t-esc="props.data.date.split(' ')[0]"/></span>
+					<span style="margin-left:40%;">Hora: </span>
+					<span style="float: right;">
+						<t t-esc="props.data.date.split(' ')[1]"/></span>
+				</div>
+
+	           	<!-- <div class="fw-bolder" t-if="props.data.trackingNumber and !props.data.bigTrackingNumber">
+	                <span class="fs-2" t-esc="props.data.trackingNumber" />
+	            </div> -->
+	        </div>
+		</xpath>
+	</t>
+
+	<t t-name="OrderReceipt" t-inherit="point_of_sale.OrderReceipt" t-inherit-mode="extension" owl="1">
+		<xpath expr="//OrderWidget" position="replace">
+			<div style="display:none; !important">
+				<OrderWidget lines="props.data.orderlines" t-slot-scope="scope">
+	                <t t-set="line" t-value="scope.line"/>
+	                <Orderline line="omit(scope.line, 'customerNote')" class="{ 'pe-none': true }">
+	                    <li t-if="line.customerNote" class="customer-note w-100 p-2 my-1 rounded text-break">
+	                        <i class="fa fa-sticky-note me-1" role="img" aria-label="Customer Note" title="Customer Note"/>
+	                        <t t-esc="line.customerNote" />
+	                    </li>
+	                    <ul t-if="line.pack_lot_lines">
+	                        <li t-foreach="line.pack_lot_lines" t-as="lot" t-key="lot.cid">
+	                            <t t-if="lot.order_line.product.tracking == 'lot'">
+	                                Lot Number <t t-esc="lot.lot_name"/>
+	                            </t>
+	                            <t t-else="">
+	                                SN <t t-esc="lot.lot_name"/>
+	                            </t>
+	                        </li>
+	                    </ul>
+	                </Orderline>
+	            </OrderWidget>
+			</div>
+			<table style="margin-top: -13%;font-size: 13px;border-top: 1px dashed; line-height: 1;"  class="table table-sm">	
+				<div t-foreach="orderlines" t-as="ol" t-key="ol.id">
+					<div style="margin: 3px 0px;width: 100%;display: flex;">
+						<span style="min-width: 25%;padding: 4px;"  t-esc="ol.get_quantity_str_with_unit()"/>
+						<span style="min-width: 5%;padding: 4px;">X</span>
+						<span style="min-width: 50%;padding: 4px;"  t-esc="props.formatCurrency(ol.get_unit_display_price())"/>
+						<span style="text-align: right;min-width: 20%;padding: 4px;">
+							$
+							<t t-esc="props.formatCurrency(order.value_in_other_currency(
+							ol.get_display_price()),false) "/>
+						</span>
+					</div>
+					<div style="width: 100%;display: flex;">
+						<span style="min-width: 75%;margin-top: -3%;padding: 4px;" t-esc="ol.get_product().display_name"/>
+						<span style="text-align: right;width: 25%;margin-top: -3%;padding: 4px;">
+							<t t-esc="props.formatCurrency(
+							ol.get_display_price(),false) "/>
+						</span>
+					</div>
+				</div>
+			</table>
+
+			<table class="table table-sm" style="font-size: 13px;">
+				<tr style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+					<td>EXENTO</td>
+					<td class="pos-receipt-right-align">
+						<t t-esc="props.formatCurrency(order.get_total_without_tax())"/>
+					</td>
+				</tr>
+				<tr style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+					<td>SUBTTL</td>
+					<td class="pos-receipt-right-align">
+						<t t-esc="props.formatCurrency(order.get_total_without_tax())"/>
+					</td>
+				</tr>
+				<t t-if="props.data.tax_details.length > 0">
+					<tr t-foreach="props.data.tax_details" t-as="tax" t-key="tax.tax.id" style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+						<td>
+							<t t-esc="tax.tax.letter || ''"/>
+                    		<t><t t-esc="tax.tax.amount"/> %</t>
+						</td>
+						<td class="pos-receipt-right-align">
+							<t t-esc="props.formatCurrency(tax.amount)" />
+						</td>
+					</tr>
+				</t>
+				
+				<tr style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+					<td>TOTAL</td>
+					<td class="pos-receipt-right-align">
+						<t t-esc="props.formatCurrency(props.data.amount_total)" />
+					</td>
+				</tr>
+				<tr style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+					<td>USD</td>
+					<td class="pos-receipt-right-align">
+						$
+						<t t-esc="props.formatCurrency(order.value_in_other_currency(
+							props.data.amount_total),false) "/>
+					</td>
+				</tr>
+				<t t-foreach="props.data.paymentlines" t-as="line" t-key="line_index">
+					<tr style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+						<td><t t-esc="line.name" /></td>
+						<td class="pos-receipt-right-align">
+							<t t-esc="props.formatCurrency(line.amount)"/>
+						</td>
+					</tr>
+				</t>
+				<tr t-if="config.cstm_field_footer" style="border-top: 1px dashed;border-bottom: 1px dashed; ">
+					<td colspan="2">
+						<span t-esc="config.cstm_field_footer" />
+					</td>
+				</tr>
+			</table>
+		</xpath>
+
+		<xpath expr="//div[hasclass('paymentlines')]" position="replace">
+			
+		</xpath>
+
+		<xpath expr="//div[hasclass('receipt-change')]" position="replace">
+			<div class="receipt-change"></div>
+		</xpath>
+
+		<xpath expr="//div[hasclass('pos-receipt-right-align')]" position="replace">
+		</xpath> 
+
+		<xpath expr="//div[hasclass('pos-receipt-amount')]" position="replace">
+		</xpath>     
+
+		<xpath expr="//t[@t-if='props.data.total_discount']" position="replace">
+		</xpath>  
+
+		<xpath expr="//div[hasclass('pos-receipt-taxes')]" position="replace">
+		</xpath>       
+
+		<xpath expr="//div[hasclass('pos-receipt')]/div[hasclass('pos-receipt-order-data')]" position="replace">
+			<div class="pos-receipt-order-data" style="display:none;">
+				<p>Odoo Point of Sale</p>
+			</div>
+		</xpath>
+
+		<xpath expr="//br[3]" position="replace">
+		</xpath> 
+		<xpath expr="//br[4]" position="replace">
+		</xpath>  
+
+		<xpath expr="//div[@t-if='props.data.footer']" position="replace">
+			<div t-if="props.data.footer"  class="pos-receipt-center-align" style="white-space:pre-line">
+               <t t-esc="props.data.footer" />
+                <br/>
+                <br/>
+            </div>
+		</xpath>  
+
+       
+	</t>
+
+</templates>

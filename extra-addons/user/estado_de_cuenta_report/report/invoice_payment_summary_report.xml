@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="report_invoice_payment_summary">
+        <t t-call="web.html_container">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="header">
+                        <div class="row">
+                            <div class="col-4">
+                                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" style="max-height: 120px;" alt="Logo" /></div>
+                            <div class="col-4" style="text-align: center; ">
+                                <strong>
+                                    ESTADO DE CUENTA
+                                </strong><br/>
+                                <strong>Desde : <t t-esc="doc.start_date"/> Hasta : <t t-esc="doc.end_date"/></strong><br/>
+                                <strong><t t-esc="doc.partner_id.name"/></strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="page">
+                        <table class="table table-bordered" style="border:3px;">
+                            <thead>
+                                <tr>
+                                    <th stlye="width:15%">
+                                        Fecha
+                                    </th>
+                                    <th stlye="width:40%">
+                                        Referencia
+                                    </th>
+                                    <th stlye="width:15%">
+                                        Débito
+                                    </th>
+                                    <th stlye="width:15%">
+                                        Crédito
+                                    </th>
+                                    <th stlye="width:15%">
+                                        Balance
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="invoice" t-value="doc.get_invoice_payment_summary()"/>
+                                <t t-foreach="invoice['inv_list']" t-as="inv">
+                                    <tr>
+                                        <td>
+                                            <t t-esc="inv['create_date']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="inv['name']"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="inv['debit'] or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="inv['credit'] or ''"/>
+                                        </td>
+                                        <td>
+                                            <t t-esc="inv['balance']"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                                <tr>
+                                    <td colspan="4" style="text-align:center;">
+                                            Total
+                                    </td>
+                                    <td colspan="1" style="text-align:left;">
+                                            <t t-esc="invoice['total']"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_invoice_payment_summary" model="ir.actions.report">
+            <field name="name">Invoice Payment Summary</field>
+            <field name="model">invoice.payment.summary</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">estado_de_cienta_report.report_invoice_payment_summary</field>
+            <field name="report_file">estado_de_cienta_report.report_invoice_payment_summary</field>
+            <field name="binding_type">report</field>
+        </record>
+
+</odoo>

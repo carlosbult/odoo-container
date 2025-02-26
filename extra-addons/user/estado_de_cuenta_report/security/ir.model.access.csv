@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+estado_de_cienta_report.access_invoice_payment_summary,access_invoice_payment_summary,estado_de_cienta_report.model_invoice_payment_summary,base.group_user,1,1,1,1

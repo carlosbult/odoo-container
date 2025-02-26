@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+{
+    "name": "Invoice Payment Summary",
+    'version': '17.0.3.2.1',
+    "category": "",
+    "summary": " estado de cienta report / Invoice Payment Summary",
+    "description": """Estado de Cuenta""",
+    'author': 'Dotsprime System',
+    'sequence': 1,
+    'email': 'dotsprime@gmail.com',
+    'support': 'sales@dotsprime.com',
+    "website":'https://dotsprime.com/',
+    "images": [],
+    "depends": ["account", "account_accountant"],
+    "data": [
+        "security/ir.model.access.csv",
+        "report/invoice_payment_summary_report.xml",
+        "wizard/invoice_payment_summary.xml",
+        "views/res_partner.xml",
+    ],
+    "price": 0,
+    "currency": "USD",
+    "installable": True,
+    "application": False,
+    "auto_install": False,
+    "license": "OPL-1",
+}
