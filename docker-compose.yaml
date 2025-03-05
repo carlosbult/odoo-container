@@ -1,0 +1,52 @@
+services:
+  odoo:
+    image: odoo:17.0
+    container_name: odoo
+    depends_on:
+      - db
+    ports:
+      - '8069:8069'
+      - '8071:8071'
+    volumes:
+      - ./addons/enterprise:/mnt/extra-addons/enterprise
+      - ./addons/custom:/mnt/extra-addons/custom
+      - ./entrypoint.sh:/entrypoint.sh:ro
+      - odoo-data:/var/lib/odoo
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - ADMIN_PASSWD=${ADMIN_PASSWD}
+    restart: always
+    entrypoint: ['/bin/bash', '/entrypoint.sh']
+
+  db:
+    image: postgres:15.12
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    depends_on:
+      - odoo
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    restart: always
+
+volumes:
+  odoo-data:
+  postgres-data:
